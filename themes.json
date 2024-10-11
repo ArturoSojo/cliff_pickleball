@@ -1,0 +1,112 @@
+[
+  {
+    "name": "credicard-theme",
+    "dflt": true,
+    "filter": {
+      "id_docs": [
+        "J403399646"
+      ]
+    },
+    "colors": {
+      "primary": "0xFF4A148C",
+      "primary_light": "0xFF8B34F6"
+    },
+    "assets_img": {
+      "uri": "assets/img/",
+      "logo": "credicard.png",
+      "logo2": "credicard2.png",
+      "logo3": "credicard3.png",
+      "closed": "closed.png",
+      "details": "details.png",
+      "last": "last.png",
+      "pos": "pos.png",
+      "report": "report.png",
+      "sales": "sales.png",
+      "simple": "simple.png",
+      "test": "test.png",
+      "transactions": "transactions.png"
+    }
+  },
+  {
+    "name": "chinchin-theme",
+    "filter": {
+      "id_docs": [
+        "J000000001",
+        "V016673906"
+      ]
+    },
+    "colors": {
+      "primary": "0xFF11A387",
+      "primary_light": "0xFFA9EADD"
+    },
+    "assets_img": {
+      "uri": "assets/img/chinchin/",
+      "logo": "chinchin.png",
+      "logo2": "chinchin2.png",
+      "logo3": "credicard2.png",
+      "closed": "closed.png",
+      "details": "details.png",
+      "last": "last.png",
+      "pos": "pos.png",
+      "report": "report.png",
+      "sales": "sales.png",
+      "simple": "simple.png",
+      "test": "test.png",
+      "transactions": "transactions.png"
+    }
+  },
+  {
+    "name": "sunmi-theme",
+    "filter": {
+      "id_docs": [
+        "J500354053"
+      ]
+    },
+    "colors": {
+      "primary": "0xFFFF4D2E",
+      "primary_light": "0xFFFF8C00"
+    },
+    "assets_img": {
+      "uri": "assets/img/",
+      "logo": "sunmi/LOGO_SUNMI_PNG_TRANSPARENTE.png",
+      "logo2": "sunmi/LOGO_SUNMI_PNG_TRANSPARENTE_SIN_PADDING.png",
+      "logo3": "sunmi/LOGO_SUNMI_PNG_TRANSPARENTE_SIN_PADDING.png",
+      "closed": "closed.png",
+      "details": "details.png",
+      "last": "last.png",
+      "pos": "pos.png",
+      "report": "report.png",
+      "sales": "sales.png",
+      "simple": "simple.png",
+      "test": "test.png",
+      "transactions": "transactions.png"
+    }
+  },
+  {
+    "name": "kafrega-theme",
+    "filter": {
+      "id_docs": [
+        "J298861738"
+      ]
+    },
+    "colors": {
+      "primary": "0xFF59287F",
+      "primary_light": "0xFF3299D8"
+    },
+    "assets_img": {
+      "uri": "assets/img/",
+      "logo": "kafrega/Isotipo.png",
+      "logo2": "kafrega/Isotipo.png",
+      "logo3": "kafrega/Isotipo.png",
+      "closed": "closed.png",
+      "details": "details.png",
+      "last": "last.png",
+      "pos": "pos.png",
+      "report": "report.png",
+      "sales": "sales.png",
+      "simple": "simple.png",
+      "test": "test.png",
+      "transactions": "transactions.png"
+    }
+  }
+]
