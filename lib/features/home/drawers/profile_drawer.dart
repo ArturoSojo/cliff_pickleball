@@ -1,0 +1,62 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cliff_pickleball/features/auth/controllers/auth_controller.dart';
+import 'package:cliff_pickleball/theme/palette.dart';
+import 'package:routemaster/routemaster.dart';
+import 'package:velocity_x/velocity_x.dart';
+
+class ProfileDrawer extends ConsumerWidget {
+  const ProfileDrawer({super.key});
+
+  void logout(WidgetRef ref) {
+    ref.read(authControllerProvider.notifier).logout();
+  }
+
+  void navigateToUserProfile(BuildContext context, String uid) =>
+      Routemaster.of(context).push('/u/$uid');
+
+  void toggleTheme(WidgetRef ref) {
+    ref.read(themeNotifierProvider.notifier).toggleTheme();
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(userProvider);
+    return Drawer(
+      child: SafeArea(
+        child: Column(
+          children: [
+            CircleAvatar(
+              backgroundImage: NetworkImage(user!.profilePic),
+              radius: 70,
+            ),
+            10.heightBox,
+            'u/${user.name}'.text.size(16).semiBold.make(),
+            10.heightBox,
+            const Divider(color: Palette.greyColor),
+            ListTile(
+              title: 'My Profile'.text.make(),
+              leading: const Icon(Icons.person),
+              onTap: () => navigateToUserProfile(context, user.uid),
+            ),
+            ListTile(
+              title: 'Logout'.text.make(),
+              leading: Icon(
+                Icons.logout,
+                color: Palette.redColor,
+              ),
+              onTap: () => logout(ref),
+            ),
+            Switch.adaptive(
+              value: ref.watch(themeNotifierProvider.notifier).mode ==
+                  ThemeMode.dark,
+              activeColor: Colors.white,
+              activeTrackColor: Colors.green,
+              onChanged: (value) => toggleTheme(ref),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
