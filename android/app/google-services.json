@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1038856538748",
+    "project_id": "cliff-pickleball",
+    "storage_bucket": "cliff-pickleball.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1038856538748:android:4f70904fa70dcb710397f9",
+        "android_client_info": {
+          "package_name": "com.example.cliff_pickleball"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBugoHc4FG_gqDdbK9Ur9CszAmYk7pIpqM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

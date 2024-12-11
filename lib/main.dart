@@ -1,68 +1,99 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async';
+
+import 'package:cliff_pickleball/screens/main_screens/main_screen_management.dart';
+import 'package:cliff_pickleball/screens/main_screens/page_profile.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cliff_pickleball/core/common/error_text.dart';
-import 'package:cliff_pickleball/core/common/loader.dart';
-import 'package:cliff_pickleball/features/auth/controllers/auth_controller.dart';
+import 'package:cliff_pickleball/config/colors_collection.dart';
+import 'package:cliff_pickleball/config/stored_string_collection.dart';
+import 'package:cliff_pickleball/config/text_collection.dart';
+import 'package:cliff_pickleball/providers/providers_collection.dart';
+import 'package:cliff_pickleball/screens/entry_screens/splash_screen.dart';
+import 'package:cliff_pickleball/services/debugging.dart';
+import 'package:cliff_pickleball/services/device_specific_operations.dart';
+import 'package:cliff_pickleball/services/local_data_management.dart';
+import 'package:provider/provider.dart';
 import 'package:cliff_pickleball/firebase_options.dart';
-import 'package:cliff_pickleball/model/user_model.dart';
-import 'package:cliff_pickleball/router.dart';
-import 'package:cliff_pickleball/theme/palette.dart';
-import 'package:routemaster/routemaster.dart';
-import 'package:sizer/sizer.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const ProviderScope(child: MyApp()));
+  await DataManagement.loadEnvData();
+  _initializeFirebase();
+
+  runApp(const CliffPickleballEntry());
 }
 
-class MyApp extends ConsumerStatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _MyAppState();
-}
-
-class _MyAppState extends ConsumerState<MyApp> {
-  UserModel? userModel;
-
-  void getData(WidgetRef ref, User data) async {
-    userModel = await ref
-        .watch(authControllerProvider.notifier)
-        .getUserData(data.uid)
-        .first;
-    ref.read(userProvider.notifier).update((state) => userModel);
-    setState(() {});
-  }
+class CliffPickleballEntry extends StatelessWidget {
+  const CliffPickleballEntry({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ref.watch(authStateChangeProvider).when(
-          data: (data) => Sizer(
-            builder: (context, orientation, deviceType) => MaterialApp.router(
-              title: 'Reddit',
-              debugShowCheckedModeBanner: false,
-              theme: ref.watch(themeNotifierProvider),
-              routerDelegate: RoutemasterDelegate(
-                routesBuilder: (context) {
-                  if (data != null) {
-                    getData(ref, data);
-                    if (userModel != null) {
-                      return loggedInRoute;
-                    }
-                  }
-                  return loggedOutRoute;
-                },
-              ),
-              routeInformationParser: const RoutemasterParser(),
-            ),
-          ),
-          error: (error, stackTrace) => ErrorText(error: error.toString()),
-          loading: () => const Loader(),
-        );
+    return MultiProvider(
+      providers: providersCollection,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: AppText.appName,
+        theme: ThemeData(
+            fontFamily: AppText.fontFamily,
+            bottomSheetTheme: const BottomSheetThemeData(
+                backgroundColor: AppColors.transparentColor)),
+        builder: (context, child) => MediaQuery(
+          child: child!,
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+        ),
+        home: SplashScreen(),
+      ),
+    );
   }
+}
+
+_initializeFirebase() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await notificationInitialize();
+
+  await FirebaseMessaging.instance.setAutoInitEnabled(true);
+
+  /// For Background Message Handling
+  FirebaseMessaging.onBackgroundMessage(backgroundMsgAction);
+
+  /// For Foreground Message Handling
+  FirebaseMessaging.onMessage.listen(foregroundMessageAction);
+}
+
+Future<void> notificationInitialize() async {
+  /// Important to subscribe a topic to send and receive message using FCM via http
+  ///
+  debugShow(
+      'Topic to subscribe: ${DataManagement.getEnvData(EnvFileKey.firebaseMessagingTopic)}');
+  await FirebaseMessaging.instance.subscribeToTopic(
+      DataManagement.getEnvData(EnvFileKey.firebaseMessagingTopic) ?? '');
+
+  /// Foreground Notification Options Enabled
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+}
+
+Future<void> backgroundMsgAction(RemoteMessage message) async {
+  debugShow("Background MEssage is: ${message.data}");
+}
+
+void foregroundMessageAction(RemoteMessage msgEvent) async {
+  final _currChatPartnerId =
+      await DataManagement.getStringData(StoredString.currChatPartnerId);
+
+  if (_currChatPartnerId != null &&
+      _currChatPartnerId == msgEvent.data['connId']) return;
+
+  final NotificationManagement _notificationManagement =
+      NotificationManagement();
+  _notificationManagement.showNotification(
+      title: msgEvent.notification!.title ?? '',
+      body: msgEvent.notification!.body ?? '',
+      image: msgEvent.data['image']);
 }
