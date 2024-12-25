@@ -15,7 +15,7 @@ import 'package:cliff_pickleball/services/device_specific_operations.dart';
 import 'package:cliff_pickleball/services/local_data_management.dart';
 import 'package:provider/provider.dart';
 import 'package:cliff_pickleball/firebase_options.dart';
-
+  
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DataManagement.loadEnvData();

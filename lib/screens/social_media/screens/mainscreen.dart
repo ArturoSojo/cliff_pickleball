@@ -32,7 +32,7 @@ class _TabScreenState extends State<TabScreen> {
     },
     {
       'title': 'unsee',
-      'icon': Ionicons.add_circle,
+      'icon': CupertinoIcons.add,
       'page': Text('nes'),
       'index': 2,
     },
